@@ -158,3 +158,4 @@ const PopupPolicies = ({ isOpen, onClose, type }) => {
 
 export default PopupPolicies;
 
+

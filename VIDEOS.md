@@ -178,3 +178,4 @@ Si tienes dudas sobre la implementación de los videos, revisa:
 **Proyecto:** PetMAT Ecommerce  
 **Última actualización:** Octubre 2025
 
+
