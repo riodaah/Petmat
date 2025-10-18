@@ -24,8 +24,8 @@ const Hero = () => {
         </video>
       </div>
 
-      {/* Overlay oscuro */}
-      <div className="absolute inset-0 bg-black/30" />
+      {/* Overlay oscuro más intenso para mejor contraste */}
+      <div className="absolute inset-0 bg-black/50" />
 
       {/* Contenido */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -44,12 +44,9 @@ const Hero = () => {
             Productos seguros, duraderos y pensados para su bienestar.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex justify-center">
             <CTAButton to="/tienda" size="lg">
               Ver Tienda
-            </CTAButton>
-            <CTAButton to="/contacto" variant="secondary" size="lg">
-              Contáctanos
             </CTAButton>
           </div>
         </motion.div>
