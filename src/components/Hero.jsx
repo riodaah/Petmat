@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import CTAButton from './CTAButton';
+import heroVideo from '../assets/videos/hero.mp4';
 
 /**
  * Componente Hero con video de fondo
@@ -11,15 +12,7 @@ const Hero = () => {
   return (
     <section className="relative h-[600px] md:h-[700px] flex items-center justify-center overflow-hidden">
       {/* Video de fondo */}
-      {/* 
-        TODO: Agregar video hero.mp4 en src/assets/videos/
-        Specs: 1920x1080px, 6-8 segundos, sin audio, loop
-        Prompt sugerido: "Perro jugando feliz en living con estética clara y natural, minimal setup"
-      */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/30">
-        {/* Placeholder mientras se genera el video */}
-        <div className="w-full h-full bg-gradient-to-br from-primary/10 to-muted" />
-        {/* Descomentar cuando tengas el video:
         <video
           autoPlay
           loop
@@ -27,9 +20,8 @@ const Hero = () => {
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src="/src/assets/videos/hero.mp4" type="video/mp4" />
+          <source src={heroVideo} type="video/mp4" />
         </video>
-        */}
       </div>
 
       {/* Overlay oscuro */}
