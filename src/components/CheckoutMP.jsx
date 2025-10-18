@@ -77,34 +77,70 @@ const CheckoutMP = () => {
     setLoading(true);
 
     try {
-      // En producción, debes hacer un POST a tu backend con:
-      // - items del carrito
-      // - información de envío
-      // - el backend crea la preferencia y retorna el init_point
+      // Crear preferencia de pago con Mercado Pago
+      const publicKey = import.meta.env.VITE_MP_PUBLIC_KEY;
       
-      // MODO DEMO: Simular éxito
-      console.log('Datos de compra:', {
-        items: cart,
-        shipping: formData,
-        shippingCost,
-        total,
-      });
+      if (!publicKey) {
+        throw new Error('Clave pública de Mercado Pago no configurada');
+      }
 
-      // Simular llamada a API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Cargar SDK de Mercado Pago
+      const script = document.createElement('script');
+      script.src = 'https://sdk.mercadopago.com/js/v2';
+      script.async = true;
+      
+      script.onload = () => {
+        const mp = new window.MercadoPago(publicKey);
+        
+        // Crear preferencia
+        const preference = {
+          items: cart.map(item => ({
+            title: item.name,
+            quantity: item.quantity,
+            unit_price: item.price,
+            currency_id: 'CLP'
+          })),
+          payer: {
+            name: formData.name,
+            email: formData.email,
+            phone: {
+              number: formData.phone
+            },
+            address: {
+              street_name: formData.address,
+              city_name: formData.city,
+              state_name: formData.region,
+              country_name: 'Chile'
+            }
+          },
+          shipments: {
+            cost: shippingCost,
+            mode: 'not_specified'
+          },
+          back_urls: {
+            success: `${window.location.origin}/success`,
+            failure: `${window.location.origin}/error`,
+            pending: `${window.location.origin}/success`
+          },
+          auto_return: 'approved',
+          notification_url: `${window.location.origin}/api/webhooks/mercadopago`
+        };
 
-      // En producción, aquí recibirías el init_point de Mercado Pago
-      // y redirigirías al usuario:
-      // window.location.href = response.init_point;
+        // Crear checkout
+        mp.checkout({
+          preference: preference,
+          render: {
+            container: '.mp-checkout-container',
+            label: 'Pagar con Mercado Pago'
+          }
+        });
+      };
 
-      // Por ahora, simular éxito
-      clearCart();
-      navigate('/success');
+      document.head.appendChild(script);
 
     } catch (err) {
       console.error('Error en checkout:', err);
       setError('Hubo un error al procesar tu pedido. Por favor intenta nuevamente.');
-    } finally {
       setLoading(false);
     }
   };
@@ -273,6 +309,9 @@ const CheckoutMP = () => {
                     {error}
                   </motion.div>
                 )}
+
+                {/* Contenedor para botón de Mercado Pago */}
+                <div className="mp-checkout-container"></div>
 
                 {/* Botón submit */}
                 <motion.button
