@@ -1,0 +1,32 @@
+{
+  "brand": {
+    "name": "PetMAT",
+    "instagram": "https://instagram.com/petmatcl",
+    "email": "info@petmat.cl"
+  },
+  "colors": {
+    "primary": "#6CC5E9",
+    "text": "#333333",
+    "bg": "#FFFFFF",
+    "muted": "#F5F5F5",
+    "gradient": "linear-gradient(90deg, #6CC5E9, #A8E0F1)"
+  },
+  "fonts": {
+    "heading": "Poppins",
+    "body": "Nunito Sans"
+  },
+  "shipping": {
+    "rm": 2990,
+    "regions": 3990,
+    "prep_days_min": 2,
+    "prep_days_max": 5,
+    "pickup": false
+  },
+  "socials": {
+    "instagram": "https://instagram.com/petmatcl"
+  },
+  "mp": {
+    "public_key_env": "VITE_MP_PUBLIC_KEY"
+  }
+}
+

@@ -1,0 +1,70 @@
+[
+  {
+    "id": "p1",
+    "slug": "alfombra-olfativa",
+    "name": "Alfombra Olfativa PetMAT",
+    "price": 26990,
+    "short": "Estimulación mental y diversión para tu perro.",
+    "description": "Alfombra olfativa de alta calidad para esconder snacks y estimular el olfato de tu mascota. Material lavable, base antideslizante. Perfecta para reducir ansiedad y mantener a tu perro entretenido.",
+    "features": [
+      "Material lavable y resistente",
+      "Base antideslizante",
+      "Estimula el olfato y reduce ansiedad",
+      "Múltiples escondites para premios"
+    ],
+    "images": [
+      "/src/assets/products/p1/foto-principal.png",
+      "/src/assets/products/p1/sam-y-alfombra.png",
+      "/src/assets/products/p1/sam-y-alfombra-2.png",
+      "/src/assets/products/p1/conos.png",
+      "/src/assets/products/p1/polar.png",
+      "/src/assets/products/p1/escondite.png",
+      "/src/assets/products/p1/reverso.png"
+    ]
+  },
+  {
+    "id": "p2",
+    "slug": "alfombra-olfativa-circular",
+    "name": "Alfombra Olfativa Circular PetMAT",
+    "price": 19990,
+    "short": "Diseño circular único para mayor diversión.",
+    "description": "Alfombra olfativa con diseño circular innovador. Ideal para perros de todos los tamaños. Material premium, fácil de limpiar y con múltiples áreas de búsqueda para estimular el instinto natural de tu mascota.",
+    "features": [
+      "Diseño circular único",
+      "Material premium de alta durabilidad",
+      "Múltiples texturas y escondites",
+      "Fácil limpieza y mantenimiento"
+    ],
+    "images": [
+      "/src/assets/products/p2/portada.png",
+      "/src/assets/products/p2/portada-2.png",
+      "/src/assets/products/p2/detalle.png",
+      "/src/assets/products/p2/pata-de-sam.png"
+    ]
+  },
+  {
+    "id": "p3",
+    "slug": "comedero-automatico",
+    "name": "Comedero Automático WiFi PetMAT",
+    "price": 44990,
+    "short": "Alimentación inteligente con cámara y WiFi.",
+    "description": "Comedero automático de última generación con cámara HD integrada, conexión WiFi y control desde tu smartphone. Programa horarios de alimentación, controla porciones y vigila a tu mascota desde cualquier lugar. Perfecto para mantener la rutina de alimentación incluso cuando no estás en casa.",
+    "features": [
+      "Cámara HD con visión nocturna",
+      "Control WiFi desde tu smartphone",
+      "Porciones programables",
+      "Grabación de audio bidireccional",
+      "Capacidad 4L de alimento",
+      "Batería de respaldo"
+    ],
+    "images": [
+      "/src/assets/products/p3/portada-profesional.png",
+      "/src/assets/products/p3/camara-wifi-hd-2.png",
+      "/src/assets/products/p3/una-porcion-hd.png",
+      "/src/assets/products/p3/accesorios-hd.png",
+      "/src/assets/products/p3/wifi-hd.png",
+      "/src/assets/products/p3/medidas-hd-2.png"
+    ]
+  }
+]
+
