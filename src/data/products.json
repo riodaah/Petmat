@@ -13,13 +13,13 @@
       "Múltiples escondites para premios"
     ],
     "images": [
-      "/src/assets/products/p1/foto-principal.png",
-      "/src/assets/products/p1/sam-y-alfombra.png",
-      "/src/assets/products/p1/sam-y-alfombra-2.png",
-      "/src/assets/products/p1/conos.png",
-      "/src/assets/products/p1/polar.png",
-      "/src/assets/products/p1/escondite.png",
-      "/src/assets/products/p1/reverso.png"
+      "/assets/products/p1/foto-principal.png",
+      "/assets/products/p1/sam-y-alfombra.png",
+      "/assets/products/p1/sam-y-alfombra-2.png",
+      "/assets/products/p1/conos.png",
+      "/assets/products/p1/polar.png",
+      "/assets/products/p1/escondite.png",
+      "/assets/products/p1/reverso.png"
     ]
   },
   {
@@ -36,10 +36,10 @@
       "Fácil limpieza y mantenimiento"
     ],
     "images": [
-      "/src/assets/products/p2/portada.png",
-      "/src/assets/products/p2/portada-2.png",
-      "/src/assets/products/p2/detalle.png",
-      "/src/assets/products/p2/pata-de-sam.png"
+      "/assets/products/p2/portada.png",
+      "/assets/products/p2/portada-2.png",
+      "/assets/products/p2/detalle.png",
+      "/assets/products/p2/pata-de-sam.png"
     ]
   },
   {
@@ -58,12 +58,12 @@
       "Batería de respaldo"
     ],
     "images": [
-      "/src/assets/products/p3/portada-profesional.png",
-      "/src/assets/products/p3/camara-wifi-hd-2.png",
-      "/src/assets/products/p3/una-porcion-hd.png",
-      "/src/assets/products/p3/accesorios-hd.png",
-      "/src/assets/products/p3/wifi-hd.png",
-      "/src/assets/products/p3/medidas-hd-2.png"
+      "/assets/products/p3/portada-profesional.png",
+      "/assets/products/p3/camara-wifi-hd-2.png",
+      "/assets/products/p3/una-porcion-hd.png",
+      "/assets/products/p3/accesorios-hd.png",
+      "/assets/products/p3/wifi-hd.png",
+      "/assets/products/p3/medidas-hd-2.png"
     ]
   }
 ]
