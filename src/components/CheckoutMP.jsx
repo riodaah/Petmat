@@ -81,12 +81,15 @@ const CheckoutMP = () => {
       const publicKey = import.meta.env.VITE_MP_PUBLIC_KEY;
       
       // Debug: Verificar variables de entorno
-      console.log('Variables de entorno:', {
-        VITE_MP_PUBLIC_KEY: import.meta.env.VITE_MP_PUBLIC_KEY,
-        VITE_MP_ACCESS_TOKEN: import.meta.env.VITE_MP_ACCESS_TOKEN,
-        NODE_ENV: import.meta.env.NODE_ENV,
-        MODE: import.meta.env.MODE
-      });
+      console.log('=== DEBUG MERCADO PAGO ===');
+      console.log('Todas las variables de entorno:', import.meta.env);
+      console.log('VITE_MP_PUBLIC_KEY:', import.meta.env.VITE_MP_PUBLIC_KEY);
+      console.log('VITE_MP_ACCESS_TOKEN:', import.meta.env.VITE_MP_ACCESS_TOKEN);
+      console.log('NODE_ENV:', import.meta.env.NODE_ENV);
+      console.log('MODE:', import.meta.env.MODE);
+      console.log('DEV:', import.meta.env.DEV);
+      console.log('PROD:', import.meta.env.PROD);
+      console.log('========================');
       
       if (!publicKey) {
         throw new Error('Clave pública de Mercado Pago no configurada');
