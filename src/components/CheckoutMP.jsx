@@ -116,19 +116,24 @@ const CheckoutMP = () => {
     try {
       const mp = new window.MercadoPago(publicKey);
       
-      // Crear preferencia
+      // Crear preferencia mejorada según mejores prácticas de Mercado Pago
       const preference = {
-        items: cart.map(item => ({
+        items: cart.map((item, index) => ({
+          id: `item_${index + 1}`,
           title: item.name,
+          description: item.description || item.name,
           quantity: item.quantity,
           unit_price: item.price,
-          currency_id: 'CLP'
+          currency_id: 'CLP',
+          category_id: 'others' // Categoría para mascotas
         })),
         payer: {
           name: formData.name,
+          surname: formData.name.split(' ')[1] || '',
           email: formData.email,
           phone: {
-            number: formData.phone
+            number: formData.phone,
+            area_code: '56' // Código de Chile
           },
           address: {
             street_name: formData.address,
@@ -146,16 +151,20 @@ const CheckoutMP = () => {
           failure: `${window.location.origin}/error`,
           pending: `${window.location.origin}/success`
         },
-        auto_return: 'approved'
+        auto_return: 'approved',
+        statement_descriptor: 'PetMAT',
+        external_reference: `petmat_${Date.now()}`,
+        binary_mode: false,
+        installments: 12, // Máximo 12 cuotas
+        notification_url: `${window.location.origin}/api/webhooks/mercadopago`
       };
 
-      // Crear checkout con autoOpen: false para evitar múltiples botones
+      // Crear checkout sin autoOpen para evitar el error
       mp.checkout({
         preference: preference,
         render: {
           container: '.mp-checkout-container',
-          label: 'Pagar con Mercado Pago',
-          autoOpen: false
+          label: 'Pagar con Mercado Pago'
         }
       });
 
