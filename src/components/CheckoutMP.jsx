@@ -77,81 +77,93 @@ const CheckoutMP = () => {
     setLoading(true);
 
     try {
-      // Crear preferencia de pago con Mercado Pago
+      // Verificar que las variables estén configuradas
       const publicKey = import.meta.env.VITE_MP_PUBLIC_KEY;
-      
-      // Debug: Verificar variables de entorno
-      console.log('=== DEBUG MERCADO PAGO ===');
-      console.log('Todas las variables de entorno:', import.meta.env);
-      console.log('VITE_MP_PUBLIC_KEY:', import.meta.env.VITE_MP_PUBLIC_KEY);
-      console.log('VITE_MP_ACCESS_TOKEN:', import.meta.env.VITE_MP_ACCESS_TOKEN);
-      console.log('NODE_ENV:', import.meta.env.NODE_ENV);
-      console.log('MODE:', import.meta.env.MODE);
-      console.log('DEV:', import.meta.env.DEV);
-      console.log('PROD:', import.meta.env.PROD);
-      console.log('========================');
       
       if (!publicKey) {
         throw new Error('Clave pública de Mercado Pago no configurada');
       }
 
-      // Cargar SDK de Mercado Pago
-      const script = document.createElement('script');
-      script.src = 'https://sdk.mercadopago.com/js/v2';
-      script.async = true;
-      
-      script.onload = () => {
-        const mp = new window.MercadoPago(publicKey);
+      // Limpiar contenedor anterior si existe
+      const container = document.querySelector('.mp-checkout-container');
+      if (container) {
+        container.innerHTML = '';
+      }
+
+      // Cargar SDK de Mercado Pago solo si no está ya cargado
+      if (!window.MercadoPago) {
+        const script = document.createElement('script');
+        script.src = 'https://sdk.mercadopago.com/js/v2';
+        script.async = true;
         
-        // Crear preferencia
-        const preference = {
-          items: cart.map(item => ({
-            title: item.name,
-            quantity: item.quantity,
-            unit_price: item.price,
-            currency_id: 'CLP'
-          })),
-          payer: {
-            name: formData.name,
-            email: formData.email,
-            phone: {
-              number: formData.phone
-            },
-            address: {
-              street_name: formData.address,
-              city_name: formData.city,
-              state_name: formData.region,
-              country_name: 'Chile'
-            }
-          },
-          shipments: {
-            cost: shippingCost,
-            mode: 'not_specified'
-          },
-          back_urls: {
-            success: `${window.location.origin}/success`,
-            failure: `${window.location.origin}/error`,
-            pending: `${window.location.origin}/success`
-          },
-          auto_return: 'approved',
-          notification_url: `${window.location.origin}/api/webhooks/mercadopago`
+        script.onload = () => {
+          initializeMercadoPago(publicKey);
         };
 
-        // Crear checkout
-        mp.checkout({
-          preference: preference,
-          render: {
-            container: '.mp-checkout-container',
-            label: 'Pagar con Mercado Pago'
-          }
-        });
-      };
-
-      document.head.appendChild(script);
+        document.head.appendChild(script);
+      } else {
+        initializeMercadoPago(publicKey);
+      }
 
     } catch (err) {
       console.error('Error en checkout:', err);
       setError('Hubo un error al procesar tu pedido. Por favor intenta nuevamente.');
+      setLoading(false);
+    }
+  };
+
+  const initializeMercadoPago = (publicKey) => {
+    try {
+      const mp = new window.MercadoPago(publicKey);
+      
+      // Crear preferencia
+      const preference = {
+        items: cart.map(item => ({
+          title: item.name,
+          quantity: item.quantity,
+          unit_price: item.price,
+          currency_id: 'CLP'
+        })),
+        payer: {
+          name: formData.name,
+          email: formData.email,
+          phone: {
+            number: formData.phone
+          },
+          address: {
+            street_name: formData.address,
+            city_name: formData.city,
+            state_name: formData.region,
+            country_name: 'Chile'
+          }
+        },
+        shipments: {
+          cost: shippingCost,
+          mode: 'not_specified'
+        },
+        back_urls: {
+          success: `${window.location.origin}/success`,
+          failure: `${window.location.origin}/error`,
+          pending: `${window.location.origin}/success`
+        },
+        auto_return: 'approved'
+      };
+
+      // Crear checkout con autoOpen: false para evitar múltiples botones
+      mp.checkout({
+        preference: preference,
+        render: {
+          container: '.mp-checkout-container',
+          label: 'Pagar con Mercado Pago',
+          autoOpen: false
+        }
+      });
+
+      setLoading(false);
+
+    } catch (err) {
+      console.error('Error inicializando Mercado Pago:', err);
+      setError('Error al inicializar el sistema de pagos. Por favor intenta nuevamente.');
       setLoading(false);
     }
   };
