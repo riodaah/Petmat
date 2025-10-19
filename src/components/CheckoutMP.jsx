@@ -80,6 +80,14 @@ const CheckoutMP = () => {
       // Crear preferencia de pago con Mercado Pago
       const publicKey = import.meta.env.VITE_MP_PUBLIC_KEY;
       
+      // Debug: Verificar variables de entorno
+      console.log('Variables de entorno:', {
+        VITE_MP_PUBLIC_KEY: import.meta.env.VITE_MP_PUBLIC_KEY,
+        VITE_MP_ACCESS_TOKEN: import.meta.env.VITE_MP_ACCESS_TOKEN,
+        NODE_ENV: import.meta.env.NODE_ENV,
+        MODE: import.meta.env.MODE
+      });
+      
       if (!publicKey) {
         throw new Error('Clave pública de Mercado Pago no configurada');
       }
