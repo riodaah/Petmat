@@ -127,7 +127,7 @@ const CheckoutMP = () => {
     }
   };
 
-  const initializeMercadoPago = (publicKey) => {
+  const initializeMercadoPago = async (publicKey) => {
     try {
       console.log('🚀 Inicializando Mercado Pago con publicKey:', publicKey.substring(0, 10) + '...');
       
