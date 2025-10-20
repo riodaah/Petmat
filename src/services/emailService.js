@@ -15,11 +15,7 @@ export const emailService = {
         publicKey: EMAILJS_CONFIG.PUBLIC_KEY
       });
 
-      // Verificar que EmailJS esté inicializado
-      if (!window.emailjs) {
-        console.error('❌ EmailJS no está cargado');
-        return { success: false, error: 'EmailJS no está cargado' };
-      }
+      // EmailJS está disponible como módulo importado
 
       const templateParams = {
         name: formData.name,
