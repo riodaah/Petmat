@@ -178,14 +178,25 @@ const CheckoutMP = () => {
         notification_url: `${window.location.origin}/api/webhooks/mercadopago`
       };
 
-      // Crear checkout con autoOpen para evitar el warning
-      console.log('🎯 Creando checkout con autoOpen...');
+      // Crear checkout sin autoOpen y abrirlo manualmente
+      console.log('🎯 Creando checkout...');
       const checkout = mp.checkout({
-        preference: preference,
-        autoOpen: true
+        preference: preference
       });
 
-      console.log('✅ Checkout creado exitosamente, debería abrirse automáticamente');
+      console.log('✅ Checkout creado exitosamente, abriendo manualmente...');
+      
+      // Abrir el checkout manualmente después de un breve delay
+      setTimeout(() => {
+        try {
+          console.log('🚀 Abriendo checkout de Mercado Pago...');
+          checkout.open();
+        } catch (err) {
+          console.error('❌ Error abriendo checkout:', err);
+          setError('Error al abrir el sistema de pagos. Por favor intenta nuevamente.');
+          setLoading(false);
+        }
+      }, 500);
       setLoading(false);
 
     } catch (err) {
