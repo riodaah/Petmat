@@ -10,6 +10,7 @@ import ProductPage from './components/ProductPage';
 import CheckoutMPNew from './components/CheckoutMPNew';
 import Success from './pages/Success';
 import Error from './pages/Error';
+import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -23,11 +24,12 @@ function App() {
               <Route path="/tienda" element={<Tienda />} />
               <Route path="/contacto" element={<Contacto />} />
               <Route path="/producto/:slug" element={<ProductPage />} />
-              <Route path="/checkout" element={<CheckoutMPNew />} />
-              <Route path="/success" element={<Success />} />
-              <Route path="/error" element={<Error />} />
-              {/* 404 - Redirigir a home */}
-              <Route path="*" element={<Home />} />
+                  <Route path="/checkout" element={<CheckoutMPNew />} />
+                  <Route path="/success" element={<Success />} />
+                  <Route path="/error" element={<Error />} />
+                  <Route path="/admin" element={<Admin />} />
+                  {/* 404 - Redirigir a home */}
+                  <Route path="*" element={<Home />} />
             </Routes>
           </main>
           <Footer />

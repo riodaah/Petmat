@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useCart } from '../hooks/useCart';
 import { formatCLP } from '../utils/currency';
+import { orderService } from '../services/orderService';
+import { emailService } from '../services/emailService';
 
 const CheckoutMPNew = () => {
   const { cart, clearCart } = useCart();
@@ -146,7 +148,38 @@ const CheckoutMPNew = () => {
     try {
       console.log('🚀 Iniciando proceso de pago...');
       
-      // Crear preferencia
+      // Crear orden en el sistema
+      const orderData = {
+        customer: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone
+        },
+        shipping: {
+          address: formData.address,
+          city: formData.city,
+          region: formData.region,
+          notes: formData.notes || ''
+        },
+        items: cart.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          images: item.images
+        })),
+        subtotal: subtotal,
+        shipping_cost: shippingCost,
+        total: total,
+        payment_status: 'pending',
+        estimated_delivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString()
+      };
+
+      // Guardar orden
+      const order = await orderService.createOrder(orderData);
+      console.log('✅ Orden creada:', order.id);
+
+      // Crear preferencia con referencia de la orden
       const preferenceId = await createPreference();
       console.log('✅ Preferencia creada:', preferenceId);
 

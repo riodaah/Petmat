@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import ScrollReveal from '../components/ScrollReveal';
 import config from '../config.json';
+import { emailService } from '../services/emailService';
 
 const Contacto = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     message: ''
   });
   const [status, setStatus] = useState('idle'); // idle, sending, success, error
@@ -20,12 +22,21 @@ const Contacto = () => {
     e.preventDefault();
     setStatus('sending');
 
-    // Simular envío (en producción, integrar con un servicio de email)
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    console.log('Mensaje enviado:', formData);
-    setStatus('success');
-    setFormData({ name: '', email: '', message: '' });
+    try {
+      const result = await emailService.sendContactEmail(formData);
+      
+      if (result.success) {
+        setStatus('success');
+        setFormData({ name: '', email: '', phone: '', message: '' });
+        console.log('Mensaje enviado exitosamente');
+      } else {
+        setStatus('error');
+        console.error('Error enviando mensaje:', result.error);
+      }
+    } catch (error) {
+      setStatus('error');
+      console.error('Error enviando mensaje:', error);
+    }
 
     // Reset status después de 5 segundos
     setTimeout(() => setStatus('idle'), 5000);
@@ -87,6 +98,19 @@ const Contacto = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-text mb-2">
+                      Teléfono (opcional)
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
                     />
                   </div>
@@ -243,6 +267,7 @@ const Contacto = () => {
 };
 
 export default Contacto;
+
 
 
 
