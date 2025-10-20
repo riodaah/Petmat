@@ -385,9 +385,12 @@ const CheckoutMPNew = () => {
                   <div key={item.id} className="flex items-center space-x-4">
                     <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0">
                       <img
-                        src={item.image}
+                        src={item.images?.[0] || '/assets/products/placeholder.png'}
                         alt={item.name}
                         className="w-full h-full object-cover rounded-lg"
+                        onError={(e) => {
+                          e.target.src = '/assets/products/placeholder.png';
+                        }}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
