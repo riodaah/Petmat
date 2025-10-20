@@ -178,25 +178,23 @@ const CheckoutMP = () => {
         notification_url: `${window.location.origin}/api/webhooks/mercadopago`
       };
 
-      // Crear checkout sin autoOpen y abrirlo manualmente
+      // Crear checkout y esperar a que esté completamente listo
       console.log('🎯 Creando checkout...');
-      const checkout = mp.checkout({
+      const checkout = await mp.checkout({
         preference: preference
       });
 
-      console.log('✅ Checkout creado exitosamente, abriendo manualmente...');
+      console.log('✅ Checkout creado exitosamente, abriendo...');
       
-      // Abrir el checkout manualmente después de un breve delay
-      setTimeout(() => {
-        try {
-          console.log('🚀 Abriendo checkout de Mercado Pago...');
-          checkout.open();
-        } catch (err) {
-          console.error('❌ Error abriendo checkout:', err);
-          setError('Error al abrir el sistema de pagos. Por favor intenta nuevamente.');
-          setLoading(false);
-        }
-      }, 500);
+      // Abrir el checkout manualmente
+      try {
+        console.log('🚀 Abriendo checkout de Mercado Pago...');
+        checkout.open();
+      } catch (err) {
+        console.error('❌ Error abriendo checkout:', err);
+        setError('Error al abrir el sistema de pagos. Por favor intenta nuevamente.');
+        setLoading(false);
+      }
       setLoading(false);
 
     } catch (err) {
