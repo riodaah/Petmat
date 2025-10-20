@@ -70,15 +70,21 @@ const CheckoutMP = () => {
     e.preventDefault();
     setError('');
 
+    console.log('🔵 Botón clickeado - Iniciando proceso de pago');
+
     if (!validateForm()) {
+      console.log('❌ Validación de formulario falló');
       return;
     }
 
+    console.log('✅ Formulario válido, iniciando loading...');
     setLoading(true);
 
     try {
       // Verificar que las variables estén configuradas
       const publicKey = import.meta.env.VITE_MP_PUBLIC_KEY;
+      
+      console.log('🔑 Public Key encontrada:', publicKey ? 'SÍ' : 'NO');
       
       if (!publicKey) {
         throw new Error('Clave pública de Mercado Pago no configurada');
@@ -92,21 +98,30 @@ const CheckoutMP = () => {
 
       // Cargar SDK de Mercado Pago solo si no está ya cargado
       if (!window.MercadoPago) {
+        console.log('📦 Cargando SDK de Mercado Pago...');
         const script = document.createElement('script');
         script.src = 'https://sdk.mercadopago.com/js/v2';
         script.async = true;
         
         script.onload = () => {
+          console.log('✅ SDK de Mercado Pago cargado exitosamente');
           initializeMercadoPago(publicKey);
+        };
+
+        script.onerror = () => {
+          console.error('❌ Error cargando SDK de Mercado Pago');
+          setError('Error cargando el sistema de pagos. Por favor intenta nuevamente.');
+          setLoading(false);
         };
 
         document.head.appendChild(script);
       } else {
+        console.log('✅ SDK de Mercado Pago ya está cargado');
         initializeMercadoPago(publicKey);
       }
 
     } catch (err) {
-      console.error('Error en checkout:', err);
+      console.error('❌ Error en checkout:', err);
       setError('Hubo un error al procesar tu pedido. Por favor intenta nuevamente.');
       setLoading(false);
     }
@@ -114,9 +129,13 @@ const CheckoutMP = () => {
 
   const initializeMercadoPago = (publicKey) => {
     try {
+      console.log('🚀 Inicializando Mercado Pago con publicKey:', publicKey.substring(0, 10) + '...');
+      
       const mp = new window.MercadoPago(publicKey);
+      console.log('✅ Instancia de MercadoPago creada exitosamente');
       
       // Crear preferencia mejorada según mejores prácticas de Mercado Pago
+      console.log('📋 Creando preferencia de pago...');
       const preference = {
         items: cart.map((item, index) => ({
           id: `item_${index + 1}`,
@@ -160,15 +179,17 @@ const CheckoutMP = () => {
       };
 
       // Crear checkout con autoOpen para evitar el warning
+      console.log('🎯 Creando checkout con autoOpen...');
       const checkout = mp.checkout({
         preference: preference,
         autoOpen: true
       });
 
+      console.log('✅ Checkout creado exitosamente, debería abrirse automáticamente');
       setLoading(false);
 
     } catch (err) {
-      console.error('Error inicializando Mercado Pago:', err);
+      console.error('❌ Error inicializando Mercado Pago:', err);
       setError('Error al inicializar el sistema de pagos. Por favor intenta nuevamente.');
       setLoading(false);
     }
