@@ -8,13 +8,22 @@ export const emailService = {
   // Enviar email de contacto
   async sendContactEmail(formData) {
     try {
+      console.log('📧 Iniciando envío de email de contacto...');
+      console.log('📧 Configuración EmailJS:', {
+        serviceId: EMAILJS_CONFIG.SERVICE_ID,
+        templateId: EMAIL_TEMPLATES.CONTACT,
+        publicKey: EMAILJS_CONFIG.PUBLIC_KEY
+      });
+
       const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        phone: formData.phone,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || '',
         message: formData.message,
         to_email: EMAILJS_CONFIG.USER_ID,
       };
+
+      console.log('📧 Template parameters:', templateParams);
 
       const result = await emailjs.send(
         EMAILJS_CONFIG.SERVICE_ID,
@@ -22,10 +31,15 @@ export const emailService = {
         templateParams
       );
 
-      console.log('Email de contacto enviado:', result);
+      console.log('✅ Email de contacto enviado exitosamente:', result);
       return { success: true, result };
     } catch (error) {
-      console.error('Error enviando email de contacto:', error);
+      console.error('❌ Error enviando email de contacto:', error);
+      console.error('❌ Detalles del error:', {
+        message: error.message,
+        status: error.status,
+        text: error.text
+      });
       return { success: false, error };
     }
   },
@@ -89,3 +103,4 @@ export const emailService = {
     }
   }
 };
+
