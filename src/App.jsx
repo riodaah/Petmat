@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import Tienda from './pages/Tienda';
 import Contacto from './pages/Contacto';
 import ProductPage from './components/ProductPage';
-import CheckoutMPNew from './components/CheckoutMPNew';
+import CheckoutMPRailway from './components/CheckoutMPRailway';
 import Success from './pages/Success';
 import Error from './pages/Error';
 import Admin from './pages/Admin';
@@ -24,7 +24,7 @@ function App() {
               <Route path="/tienda" element={<Tienda />} />
               <Route path="/contacto" element={<Contacto />} />
               <Route path="/producto/:slug" element={<ProductPage />} />
-                  <Route path="/checkout" element={<CheckoutMPNew />} />
+                  <Route path="/checkout" element={<CheckoutMPRailway />} />
                   <Route path="/success" element={<Success />} />
                   <Route path="/error" element={<Error />} />
                   <Route path="/admin" element={<Admin />} />
