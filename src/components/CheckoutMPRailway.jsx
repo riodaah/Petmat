@@ -114,8 +114,8 @@ export default function CheckoutMPRailway() {
 
       console.log('🛒 Enviando pedido al backend...');
 
-      // Llamar al backend para crear la preferencia
-      const response = await fetch(`${BACKEND_URL}/api/checkout`, {
+      // Llamar al backend para crear la preferencia (formato compatible con Astrochoc)
+      const response = await fetch(`${BACKEND_URL}/api/create-preference`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -15,12 +15,15 @@ const PopupPolicies = ({ isOpen, onClose, type }) => {
   const loadPolicy = async (policyType) => {
     setLoading(true);
     try {
-      const response = await fetch(`/src/data/policies/${policyType}.md`);
+      const response = await fetch(`/policies/${policyType}.md`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const text = await response.text();
       setContent(text);
     } catch (error) {
       console.error('Error cargando política:', error);
-      setContent('# Error\n\nNo se pudo cargar el contenido.');
+      setContent('# Error\n\nNo se pudo cargar el contenido de esta política.');
     } finally {
       setLoading(false);
     }
