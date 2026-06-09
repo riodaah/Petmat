@@ -13,6 +13,8 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Inicio', path: '/' },
     { name: 'Tienda', path: '/tienda' },
+    { name: 'Manta olfativa', path: '/manta-olfativa-para-perros' },
+    { name: 'Blog', path: '/blog' },
     { name: 'Contacto', path: '/contacto' },
   ];
 
@@ -20,6 +22,13 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+      <div className="bg-gradient-to-r from-primary to-[#5AB5D9] text-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          <p className="text-center text-xs sm:text-sm font-semibold tracking-wide">
+            Envios gratis a Region Metropolitana
+          </p>
+        </div>
+      </div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}

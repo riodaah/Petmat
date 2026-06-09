@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../hooks/useCart';
 import config from '../config.json';
+import { getStoredCheckoutSnapshot, sendCheckoutDiagnostic } from '../services/checkoutDiagnostics';
 
 const Success = () => {
   const { clearCart } = useCart();
@@ -10,6 +11,23 @@ const Success = () => {
   useEffect(() => {
     // Limpiar carrito al mostrar página de éxito
     clearCart();
+
+    const params = new URLSearchParams(window.location.search);
+    const checkoutSnapshot = getStoredCheckoutSnapshot();
+    sendCheckoutDiagnostic({
+      stage: 'checkout_return_success',
+      trace_id: checkoutSnapshot?.trace_id || sessionStorage.getItem('petmat_current_trace_id') || null,
+      source: 'frontend_success_page',
+      query: {
+        status: params.get('status'),
+        status_detail: params.get('status_detail'),
+        payment_id: params.get('payment_id') || params.get('collection_id'),
+        preference_id: params.get('preference_id'),
+        merchant_order_id: params.get('merchant_order_id'),
+        external_reference: params.get('external_reference')
+      },
+      checkout_snapshot: checkoutSnapshot
+    });
   }, [clearCart]);
 
   return (

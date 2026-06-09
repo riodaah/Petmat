@@ -70,10 +70,12 @@ const PopupPolicies = ({ isOpen, onClose, type }) => {
             {/* Header */}
             <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
               <h2 className="text-2xl font-heading font-bold text-text">
+                {type === 'shipping' && 'Política de Envío'}
+                {type === 'returns' && 'Política de Devoluciones'}
+                {type === 'contact' && 'Contacto'}
+                {type === 'terms' && 'Términos y Condiciones'}
                 {type === 'privacy' && 'Política de Privacidad'}
                 {type === 'cookies' && 'Política de Cookies'}
-                {type === 'terms' && 'Términos y Condiciones'}
-                {type === 'returns' && 'Política de Devoluciones'}
               </h2>
               <button
                 onClick={onClose}

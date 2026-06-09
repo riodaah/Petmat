@@ -25,19 +25,25 @@ export const CartProvider = ({ children }) => {
 
   // Agregar producto al carrito
   const addToCart = (product, quantity = 1) => {
+    const cartProduct = {
+      ...product,
+      unit_price: product.hasOffer && product.offerPrice ? product.offerPrice : product.price,
+      price: product.hasOffer && product.offerPrice ? product.offerPrice : product.price
+    };
+
     setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id);
+      const existingItem = prevCart.find(item => item.id === cartProduct.id);
       
       if (existingItem) {
         // Si ya existe, incrementar cantidad
         return prevCart.map(item =>
-          item.id === product.id
+          item.id === cartProduct.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       } else {
         // Si no existe, agregarlo
-        return [...prevCart, { ...product, quantity }];
+        return [...prevCart, { ...cartProduct, quantity }];
       }
     });
     

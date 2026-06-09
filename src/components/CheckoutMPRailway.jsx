@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useCart } from '../hooks/useCart';
 import { formatCLP } from '../utils/currency';
 import config from '../config.json';
+import { createCheckoutTraceId, sendCheckoutDiagnostic } from '../services/checkoutDiagnostics';
 
 /**
  * Componente de Checkout con Mercado Pago
@@ -10,7 +11,7 @@ import config from '../config.json';
  * SEGURIDAD: El Access Token está en el backend, NUNCA en el frontend
  */
 export default function CheckoutMPRailway() {
-  const { cart, clearCart } = useCart();
+  const { cart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ export default function CheckoutMPRailway() {
   });
 
   // URL del backend en Railway
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://petmat-backend-production.up.railway.app';
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://sunny-comfort-production.up.railway.app';
 
   const handleChange = (e) => {
     setFormData({
@@ -79,27 +80,28 @@ export default function CheckoutMPRailway() {
 
     try {
       console.log('🚀 Iniciando checkout con backend en Railway...');
+      const traceId = createCheckoutTraceId();
+      sessionStorage.setItem('petmat_current_trace_id', traceId);
 
       // Calcular shipping según región
       const shippingCost = formData.region.toLowerCase().includes('metropolitana') 
         ? config.shipping.rm 
         : config.shipping.regions;
 
-      // Formatear items para el backend (igual que Astrochoc)
+      // Enviar solo identificador y cantidad; backend calcula precio real.
       const formattedItems = cart.map(item => ({
         id: item.id,
-        title: item.name,
-        name: item.name,
-        description: item.short || 'Producto PetMAT para mascotas',
-        quantity: item.quantity,
-        price: item.price,
-        currency_id: 'CLP',
+        quantity: item.quantity
       }));
 
-      // Preparar datos del pagador (igual que Astrochoc)
+      const nameParts = formData.name.trim().split(/\s+/).filter(Boolean);
+      const firstName = nameParts[0] || formData.name.trim();
+      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'Cliente';
+
+      // Preparar datos del pagador para Checkout Pro
       const payer = {
-        name: formData.name,
-        surname: '',
+        first_name: firstName,
+        last_name: lastName,
         email: formData.email,
         phone: {
           area_code: '56',
@@ -123,6 +125,7 @@ export default function CheckoutMPRailway() {
         body: JSON.stringify({
           items: formattedItems,
           payer: payer,
+          trace_id: traceId,
           shipments: {
             cost: shippingCost,
             mode: 'not_specified'
@@ -136,6 +139,16 @@ export default function CheckoutMPRailway() {
       }
 
       const data = await response.json();
+      sessionStorage.setItem(
+        'petmat_last_checkout',
+        JSON.stringify({
+          trace_id: traceId,
+          preference_id: data.id,
+          external_reference: data.external_reference,
+          payer_email: formData.email,
+          created_at: new Date().toISOString()
+        })
+      );
       
       console.log('✅ Preferencia creada, redirigiendo a Mercado Pago...');
 
@@ -143,8 +156,6 @@ export default function CheckoutMPRailway() {
       const checkoutUrl = data.init_point || data.sandbox_init_point;
       
       if (checkoutUrl) {
-        // Limpiar carrito antes de redirigir
-        clearCart();
         // Redirigir a Mercado Pago
         window.location.href = checkoutUrl;
       } else {
@@ -153,6 +164,17 @@ export default function CheckoutMPRailway() {
 
     } catch (err) {
       console.error('❌ Error en checkout:', err);
+      await sendCheckoutDiagnostic({
+        stage: 'create_preference_error',
+        trace_id: sessionStorage.getItem('petmat_current_trace_id') || null,
+        error_message: err?.message || 'Error sin mensaje',
+        checkout_context: {
+          region: formData.region,
+          cart_items: cart.map((item) => ({ id: item.id, quantity: item.quantity })),
+          subtotal
+        },
+        source: 'frontend_checkout'
+      });
       setError(err.message || 'Error al procesar el pago. Por favor intenta de nuevo.');
       setLoading(false);
     }
@@ -163,6 +185,7 @@ export default function CheckoutMPRailway() {
     ? config.shipping.rm 
     : config.shipping.regions;
   const total = subtotal + shippingCost;
+  const shippingLabel = shippingCost === 0 ? 'Gratis' : formatCLP(shippingCost);
 
   if (cart.length === 0) {
     return (
@@ -321,7 +344,7 @@ export default function CheckoutMPRailway() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Envío:</span>
-                  <span>{formatCLP(shippingCost)}</span>
+                  <span>{shippingLabel}</span>
                 </div>
                 <div className="flex justify-between text-xl font-bold border-t pt-3 mt-3">
                   <span>Total:</span>

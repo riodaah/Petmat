@@ -21,6 +21,7 @@ const ProductGallery = ({ images, productName }) => {
             src={images[selectedImage]}
             alt={`${productName} - imagen ${selectedImage + 1}`}
             className="w-full h-full object-cover"
+            loading="eager"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -58,6 +59,7 @@ const ProductGallery = ({ images, productName }) => {
                 src={image}
                 alt={`${productName} thumbnail ${index + 1}`}
                 className="w-full h-full object-cover"
+                loading="lazy"
                 onError={(e) => {
                   e.target.src = 'https://via.placeholder.com/200x200/6CC5E9/FFFFFF?text=PetMAT';
                 }}
@@ -93,6 +95,7 @@ const ProductGallery = ({ images, productName }) => {
                 src={images[selectedImage]}
                 alt={`${productName} - zoom`}
                 className="max-w-full max-h-full object-contain"
+                loading="eager"
               />
               
               {/* Botón cerrar */}

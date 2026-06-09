@@ -1,49 +1,16 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import ScrollReveal from '../components/ScrollReveal';
+import SeoHead from '../components/SeoHead';
 import config from '../config.json';
-import { emailService } from '../services/emailService';
 
 const Contacto = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  });
-  const [status, setStatus] = useState('idle'); // idle, sending, success, error
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus('sending');
-
-    try {
-      const result = await emailService.sendContactEmail(formData);
-      
-      if (result.success) {
-        setStatus('success');
-        setFormData({ name: '', email: '', phone: '', message: '' });
-        console.log('Mensaje enviado exitosamente');
-      } else {
-        setStatus('error');
-        console.error('Error enviando mensaje:', result.error);
-      }
-    } catch (error) {
-      setStatus('error');
-      console.error('Error enviando mensaje:', error);
-    }
-
-    // Reset status después de 5 segundos
-    setTimeout(() => setStatus('idle'), 5000);
-  };
-
   return (
     <div className="min-h-screen bg-white">
+      <SeoHead
+        title="Contacto PetMAT | Te ayudamos a elegir mejor"
+        description="Escríbenos para resolver dudas sobre productos para perros y gatos, envíos en Chile y recomendaciones según tu caso."
+      />
+
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary/10 to-muted py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -64,106 +31,37 @@ const Contacto = () => {
 
       {/* Contenido */}
       <section className="py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Formulario */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <ScrollReveal>
-              <div className="bg-white rounded-xl shadow-md p-8">
-                <h2 className="text-2xl font-heading font-bold text-text mb-6">
-                  Envíanos un mensaje
-                </h2>
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-text mb-2">
-                      Nombre
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text mb-2">
-                      Teléfono (opcional)
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text mb-2">
-                      Mensaje
-                    </label>
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      required
-                      rows="5"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition resize-none"
-                    />
-                  </div>
-
-                  {status === 'success' && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm"
-                    >
-                      ¡Mensaje enviado con éxito! Te responderemos pronto.
-                    </motion.div>
-                  )}
-
-                  {status === 'error' && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
-                    >
-                      Hubo un error al enviar el mensaje. Por favor intenta nuevamente.
-                    </motion.div>
-                  )}
-
-                  <motion.button
-                    type="submit"
-                    disabled={status === 'sending'}
-                    whileHover={{ scale: status === 'sending' ? 1 : 1.02 }}
-                    whileTap={{ scale: status === 'sending' ? 1 : 0.98 }}
-                    className="w-full px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-[#5AB5D9] transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+              <div className="bg-white rounded-xl shadow-md p-8 border border-gray-100">
+                <h2 className="text-2xl font-heading font-bold text-text mb-4">Hablemos</h2>
+                <p className="text-gray-700 mb-6">
+                  Para mantener una atención más rápida, estamos atendiendo por correo e Instagram.
+                </p>
+                <div className="space-y-4">
+                  <a
+                    href={`mailto:${config.brand.email}`}
+                    className="block rounded-lg border border-gray-200 p-4 hover:border-primary transition-colors"
                   >
-                    {status === 'sending' ? 'Enviando...' : 'Enviar mensaje'}
-                  </motion.button>
-                </form>
+                    <p className="text-sm text-gray-500 mb-1">Email</p>
+                    <p className="font-semibold text-text">{config.brand.email}</p>
+                  </a>
+                  <a
+                    href={config.socials.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded-lg border border-gray-200 p-4 hover:border-primary transition-colors"
+                  >
+                    <p className="text-sm text-gray-500 mb-1">Instagram</p>
+                    <p className="font-semibold text-text">@petmatcl</p>
+                  </a>
+                </div>
               </div>
             </ScrollReveal>
 
             {/* Información de contacto */}
-            <ScrollReveal delay={0.2}>
+            <ScrollReveal delay={0.1}>
               <div className="space-y-8">
                 <div>
                   <h2 className="text-2xl font-heading font-bold text-text mb-6">
@@ -241,7 +139,7 @@ const Contacto = () => {
                       <svg className="w-5 h-5 text-primary mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
-                      RM: ${config.shipping.rm.toLocaleString('es-CL')}
+                      RM: Gratis
                     </li>
                     <li className="flex items-start">
                       <svg className="w-5 h-5 text-primary mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">

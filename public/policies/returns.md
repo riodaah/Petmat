@@ -23,7 +23,7 @@ Si recibes un producto con defectos de fabricación o que no funciona correctame
 - **3 meses** de garantía legal por fallas de fabricación
 
 ### Procedimiento
-1. Contáctanos inmediatamente a info@petmat.cl o da.morande@gmail.com
+1. Contáctanos inmediatamente a info@petmat.cl
 2. Envía fotos o videos del defecto
 3. Te proporcionaremos un código de devolución
 4. Enviaremos una etiqueta de devolución prepagada
@@ -73,7 +73,7 @@ Por razones de higiene y seguridad, algunos productos **no son retornables** exc
 
 ### Paso 1: Solicita tu Devolución
 Contáctanos por correo electrónico:
-- **Email:** info@petmat.cl | da.morande@gmail.com
+- **Email:** info@petmat.cl
 - **Asunto:** "Solicitud de Devolución - Orden #[tu número de orden]"
 
 **Incluye:**
@@ -177,7 +177,7 @@ No aplica devolución o cambio en los siguientes casos:
 
 ## 12. Contacto para Devoluciones
 
-**Correo electrónico:** info@petmat.cl | da.morande@gmail.com  
+**Correo electrónico:** info@petmat.cl  
 **Asunto sugerido:** Solicitud de Devolución - Orden #[número]  
 **Horario de respuesta:** Lunes a Viernes, 9:00 - 18:00 hrs (respondemos en 24-48 hrs)
 
@@ -193,7 +193,7 @@ Esta política de devoluciones respeta y cumple con:
 ---
 
 **¿Tienes dudas sobre devoluciones?**  
-Estamos aquí para ayudarte: info@petmat.cl | da.morande@gmail.com
+Estamos aquí para ayudarte: info@petmat.cl
 
 **PetMAT - Accesorios para Mascotas**  
 Tu satisfacción y la felicidad de tu mascota son nuestra prioridad 🐾

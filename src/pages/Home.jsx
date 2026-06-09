@@ -1,13 +1,21 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import Hero from '../components/Hero';
 import ProductGrid from '../components/ProductGrid';
 import ScrollReveal from '../components/ScrollReveal';
-import productsData from '../data/products.json';
-import config from '../config.json';
+import SeoHead from '../components/SeoHead';
+import StarRating from '../components/StarRating';
+import Badge from '../components/Badge';
+import { BLOG_POSTS, SEO_CATEGORIES, pickRelatedProducts } from '../data/seoContent';
+import { getGeneralTestimonials } from '../data/reviews';
+import { useProducts } from '../hooks/useProducts';
 
 const Home = () => {
-  // Mostrar todos los productos como destacados (solo hay 3)
-  const featuredProducts = productsData;
+  const { products, loading } = useProducts();
+  const featuredProducts = products.slice(0, 6);
+  const starProducts = pickRelatedProducts(products, 'manta-olfativa-para-perros', 1);
+  const heroProduct = starProducts[0];
+  const highlightedPosts = BLOG_POSTS.slice(0, 3);
+  const testimonials = getGeneralTestimonials();
 
   const benefits = [
     {
@@ -17,7 +25,7 @@ const Home = () => {
         </svg>
       ),
       title: 'Pago seguro',
-      description: 'Pagos protegidos con Mercado Pago'
+      description: 'Pagos protegidos y flujo de compra confiable'
     },
     {
       icon: (
@@ -26,7 +34,7 @@ const Home = () => {
         </svg>
       ),
       title: 'Envíos a todo Chile',
-      description: 'Llevamos tus productos donde estés'
+      description: 'Despachos a RM y regiones con seguimiento'
     },
     {
       icon: (
@@ -34,8 +42,8 @@ const Home = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
         </svg>
       ),
-      title: 'Materiales de calidad',
-      description: 'Productos seguros y duraderos'
+      title: 'Soluciones reales',
+      description: 'Productos enfocados en problemas cotidianos'
     },
     {
       icon: (
@@ -43,22 +51,97 @@ const Home = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
       ),
-      title: 'Soporte rápido',
-      description: 'Atención humana y personalizada'
+      title: 'Acompañamiento humano',
+      description: 'Te ayudamos a elegir según tu caso'
     }
   ];
 
   return (
     <div className="min-h-screen">
-      {/* Hero */}
-      <Hero />
+      <SeoHead
+        title="PetMAT Chile | Mantas olfativas, comederos automáticos y juguetes interactivos"
+        description="Ayuda a tu perro a relajarse, jugar y comer mejor. En PetMAT encuentras manta olfativa, comedero automático y soluciones para el aburrimiento."
+      />
+
+      <section className="bg-gradient-to-br from-primary/15 to-muted py-14 md:py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <Badge type="mas-vendido">Producto estrella</Badge>
+              <motion.div
+                animate={{ y: [0, -2, 0], opacity: [0.95, 1, 0.95] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+                className="inline-flex ml-3 px-3 py-1 rounded-full bg-accent text-white text-xs font-bold"
+              >
+                Liquidación por tiempo limitado
+              </motion.div>
+              <h1 className="text-4xl md:text-5xl font-heading font-bold text-text mt-4 mb-4 leading-tight">
+                ¿Tu perro está aburrido, ansioso o come demasiado rápido?
+              </h1>
+              <p className="text-lg text-gray-700 mb-6 max-w-xl">
+                En PetMAT te ayudamos a transformar esos problemas en rutinas saludables con juego de olfato,
+                alimentación activa y estimulación mental diaria.
+              </p>
+              <div className="flex flex-wrap gap-3 mb-5">
+                <Link to="/manta-olfativa-para-perros" className="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-[#5AB5D9]">
+                  Ver manta olfativa
+                </Link>
+                <Link to="/tienda" className="px-6 py-3 border border-gray-300 rounded-lg font-semibold text-text hover:border-primary hover:text-primary">
+                  Ir a la tienda
+                </Link>
+              </div>
+              <p className="text-sm text-gray-600">Ayuda a tu perro a relajarse jugando. Menos aburrimiento, más estimulación mental.</p>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+              <p className="text-sm font-semibold text-primary mb-2">Solución destacada</p>
+              <h2 className="text-2xl font-heading font-bold text-text mb-2">
+                Manta olfativa para perros
+              </h2>
+              <p className="text-gray-700 mb-3">
+                Ideal para perros inquietos o con mucha energía. Convierte la comida en un desafío entretenido.
+              </p>
+              <StarRating value={heroProduct?.ratingAverage || 0} count={heroProduct?.reviewsCount || 0} />
+              <div className="flex flex-wrap gap-2 mt-4 mb-5">
+                <Badge type="oferta">Oferta</Badge>
+                <Badge type="envio">RM gratis</Badge>
+              </div>
+              <Link to="/manta-olfativa-para-perros" className="inline-flex items-center text-primary font-semibold hover:underline">
+                Ver categoría destacada
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-heading font-bold text-text mb-6">Categorías destacadas</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {SEO_CATEGORIES.map((category) => (
+              <Link key={category.slug} to={`/${category.slug}`} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow">
+                <h3 className="text-xl font-heading font-semibold text-text mb-2">{category.h1}</h3>
+                <p className="text-gray-700 text-sm">{category.intro}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Productos destacados */}
-      <ProductGrid 
-        products={featuredProducts}
-        title="Productos Destacados"
-        subtitle="Descubre nuestros accesorios diseñados para el bienestar de tu mascota"
-      />
+      {loading ? (
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          </div>
+        </section>
+      ) : (
+        <ProductGrid
+          products={featuredProducts}
+          title="Productos Destacados"
+          subtitle="Accesorios pensados para resolver inquietud, aburrimiento y problemas de alimentación"
+        />
+      )}
 
       {/* Beneficios */}
       <section className="py-16 bg-muted">
@@ -92,30 +175,42 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Video sección (placeholder para futuro) */}
-      {/*
-      <section className="py-16 bg-white">
+      <section className="py-14 bg-muted">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollReveal>
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-heading font-bold text-text text-center mb-8">
-                Mira cómo funciona
-              </h2>
-              <div className="aspect-video rounded-2xl overflow-hidden bg-muted shadow-2xl">
-                {/* TODO: Agregar video de uso del producto 
-                Specs: 1920x1080px, 6-8 segundos, sin audio
-                Ubicación: src/assets/videos/product-usage-1.mp4
-                Prompt: "Perro usando alfombra olfativa, plano detalle de la nariz buscando snacks, luz natural"
-                
-                <div className="w-full h-full flex items-center justify-center">
-                  <p className="text-gray-500">Video próximamente</p>
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-text mb-8">
+            Guías útiles para dueños de perros
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {highlightedPosts.map((post) => (
+              <article key={post.slug} className="bg-white border border-gray-200 rounded-xl p-5">
+                <h3 className="font-heading font-semibold text-lg mb-2">{post.title}</h3>
+                <p className="text-sm text-gray-700 mb-3">{post.description}</p>
+                <Link to={`/blog/${post.slug}`} className="text-primary font-semibold hover:underline">
+                  Leer artículo
+                </Link>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
-      */}
+
+      <section className="py-14 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-text mb-4">Reseñas de clientes</h2>
+          <p className="text-gray-700 max-w-2xl mb-6">
+            Lo que más nos importa es que la experiencia en casa funcione de verdad. Estas son algunas opiniones que nos llegan seguido.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {testimonials.map((testimonial) => (
+              <article key={testimonial.author} className="border border-gray-200 rounded-xl p-5 bg-white">
+                <StarRating value={testimonial.rating} count={1} showText={false} />
+                <p className="text-gray-700 mt-3 mb-3">{testimonial.text}</p>
+                <p className="text-sm font-semibold text-text">{testimonial.author}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* CTA Final */}
       <section className="py-20 bg-gradient-to-br from-primary to-[#5AB5D9]">

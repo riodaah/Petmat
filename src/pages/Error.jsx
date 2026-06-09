@@ -1,8 +1,34 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import config from '../config.json';
+import { getStoredCheckoutSnapshot, sendCheckoutDiagnostic } from '../services/checkoutDiagnostics';
 
 const Error = () => {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const checkoutSnapshot = getStoredCheckoutSnapshot();
+
+    sendCheckoutDiagnostic({
+      stage: 'checkout_return_error',
+      trace_id: checkoutSnapshot?.trace_id || sessionStorage.getItem('petmat_current_trace_id') || null,
+      source: 'frontend_error_page',
+      query: {
+        status: params.get('status'),
+        status_detail: params.get('status_detail'),
+        payment_id: params.get('payment_id') || params.get('collection_id'),
+        preference_id: params.get('preference_id'),
+        merchant_order_id: params.get('merchant_order_id'),
+        external_reference: params.get('external_reference')
+      },
+      checkout_snapshot: checkoutSnapshot,
+      browser: {
+        user_agent: navigator.userAgent,
+        language: navigator.language
+      }
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-muted flex items-center justify-center px-4">
       <motion.div

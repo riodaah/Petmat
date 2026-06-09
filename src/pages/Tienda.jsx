@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
 import ProductGrid from '../components/ProductGrid';
 import ScrollReveal from '../components/ScrollReveal';
-import productsData from '../data/products.json';
+import SeoHead from '../components/SeoHead';
 import config from '../config.json';
+import { useProducts } from '../hooks/useProducts';
 
 const Tienda = () => {
+  const { products, loading, error } = useProducts();
   const benefits = [
     {
       icon: (
@@ -46,6 +48,11 @@ const Tienda = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SeoHead
+        title="Tienda PetMAT | Accesorios para perros y gatos en Chile"
+        description="Compra productos para estimulación mental, alimentación lenta y rutina diaria de tu mascota con despacho a todo Chile."
+      />
+
       {/* Hero pequeño */}
       <section className="bg-gradient-to-br from-primary/10 to-muted py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -65,7 +72,22 @@ const Tienda = () => {
       </section>
 
       {/* Grid de productos */}
-      <ProductGrid products={productsData} />
+      {loading ? (
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          </div>
+        </section>
+      ) : (
+        <>
+          {error && (
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4">{error}</div>
+            </div>
+          )}
+          <ProductGrid products={products} />
+        </>
+      )}
 
       {/* Beneficios */}
       <section className="py-16 bg-muted">
@@ -115,7 +137,7 @@ const Tienda = () => {
                   </h3>
                   <div className="space-y-2">
                     <p className="text-gray-700">
-                      <span className="font-semibold">Costo:</span> ${config.shipping.rm.toLocaleString('es-CL')}
+                      <span className="font-semibold">Costo:</span> Gratis
                     </p>
                     <p className="text-gray-700">
                       <span className="font-semibold">Tiempo de preparación:</span> {config.shipping.prep_days_min} a {config.shipping.prep_days_max} días hábiles
