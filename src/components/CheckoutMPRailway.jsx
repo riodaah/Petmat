@@ -1,8 +1,81 @@
 import { useState } from 'react';
 import { useCart } from '../hooks/useCart';
 import { formatCLP } from '../utils/currency';
-import config from '../config.json';
 import { createCheckoutTraceId, sendCheckoutDiagnostic } from '../services/checkoutDiagnostics';
+import MercadoPagoLogo from './MercadoPagoLogo';
+
+const SHIPPING_COSTS = {
+  rm: 2990,
+  center: 5600,
+  extreme: 9500
+};
+
+const REGION_OPTIONS = [
+  'Región de Arica y Parinacota',
+  'Región de Tarapacá',
+  'Región de Antofagasta',
+  'Región de Atacama',
+  'Región de Coquimbo',
+  'Región de Valparaíso',
+  'Región Metropolitana',
+  "Región de O'Higgins",
+  'Región del Maule',
+  'Región de Ñuble',
+  'Región del Biobío',
+  'Región de La Araucanía',
+  'Región de Los Ríos',
+  'Región de Los Lagos',
+  'Región de Aysén',
+  'Región de Magallanes'
+];
+
+const CENTER_REGIONS = new Set([
+  'region de atacama',
+  'region de coquimbo',
+  'region de valparaiso',
+  "region de o'higgins",
+  'region del maule',
+  'region de nuble',
+  'region del biobio',
+  'region de la araucania',
+  'region de los rios',
+  'region de los lagos'
+]);
+
+const EXTREME_REGIONS = new Set([
+  'region de arica y parinacota',
+  'region de tarapaca',
+  'region de antofagasta',
+  'region de aysen',
+  'region de magallanes'
+]);
+
+function normalizeRegion(region) {
+  return String(region || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function getShippingCostByRegion(region) {
+  const normalizedRegion = normalizeRegion(region);
+
+  if (normalizedRegion.includes('metropolitana')) {
+    return SHIPPING_COSTS.rm;
+  }
+
+  if (CENTER_REGIONS.has(normalizedRegion)) {
+    return SHIPPING_COSTS.center;
+  }
+
+  if (EXTREME_REGIONS.has(normalizedRegion)) {
+    return SHIPPING_COSTS.extreme;
+  }
+
+  // Fallback conservador para evitar subcobros.
+  return SHIPPING_COSTS.extreme;
+}
 
 /**
  * Componente de Checkout con Mercado Pago
@@ -83,10 +156,8 @@ export default function CheckoutMPRailway() {
       const traceId = createCheckoutTraceId();
       sessionStorage.setItem('petmat_current_trace_id', traceId);
 
-      // Calcular shipping según región
-      const shippingCost = formData.region.toLowerCase().includes('metropolitana') 
-        ? config.shipping.rm 
-        : config.shipping.regions;
+      // Calcular shipping según región seleccionada
+      const shippingCost = getShippingCostByRegion(formData.region);
 
       // Enviar solo identificador y cantidad; backend calcula precio real.
       const formattedItems = cart.map(item => ({
@@ -181,11 +252,9 @@ export default function CheckoutMPRailway() {
   };
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shippingCost = formData.region.toLowerCase().includes('metropolitana') 
-    ? config.shipping.rm 
-    : config.shipping.regions;
+  const shippingCost = getShippingCostByRegion(formData.region);
   const total = subtotal + shippingCost;
-  const shippingLabel = shippingCost === 0 ? 'Gratis' : formatCLP(shippingCost);
+  const shippingLabel = formatCLP(shippingCost);
 
   if (cart.length === 0) {
     return (
@@ -298,15 +367,15 @@ export default function CheckoutMPRailway() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
                   required
                 >
-                  <option value="Región Metropolitana">Región Metropolitana</option>
-                  <option value="Región de Valparaíso">Región de Valparaíso</option>
-                  <option value="Región del Biobío">Región del Biobío</option>
-                  <option value="Región de La Araucanía">Región de La Araucanía</option>
-                  <option value="Región de Los Lagos">Región de Los Lagos</option>
-                  <option value="Región de O'Higgins">Región de O'Higgins</option>
-                  <option value="Región del Maule">Región del Maule</option>
-                  <option value="Otra">Otra región</option>
+                  {REGION_OPTIONS.map((region) => (
+                    <option key={region} value={region}>
+                      {region}
+                    </option>
+                  ))}
                 </select>
+                <p className="mt-2 text-sm text-gray-600">
+                  Envío para esta región: <span className="font-semibold text-text">{shippingLabel}</span>
+                </p>
               </div>
             </div>
           </div>
@@ -374,9 +443,15 @@ export default function CheckoutMPRailway() {
                 )}
               </button>
 
-              <p className="text-xs text-center text-gray-500 mt-4">
-                🔒 Pago seguro procesado por Mercado Pago
-              </p>
+              <div className="flex flex-col items-center gap-1 mt-4">
+                <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                  <svg className="w-3.5 h-3.5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                  Pago seguro procesado por
+                </div>
+                <MercadoPagoLogo height={26} />
+              </div>
             </div>
           </div>
         </div>
