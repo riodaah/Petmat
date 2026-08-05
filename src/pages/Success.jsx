@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../hooks/useCart';
@@ -7,8 +7,14 @@ import { getStoredCheckoutSnapshot, sendCheckoutDiagnostic } from '../services/c
 
 const Success = () => {
   const { clearCart } = useCart();
+  // Evita re-ejecutar el efecto: clearCart cambia de identidad en cada render
+  // y provocaba un bucle que enviaba miles de diagnósticos al backend.
+  const alreadyReported = useRef(false);
 
   useEffect(() => {
+    if (alreadyReported.current) return;
+    alreadyReported.current = true;
+
     // Limpiar carrito al mostrar página de éxito
     clearCart();
 
@@ -28,7 +34,8 @@ const Success = () => {
       },
       checkout_snapshot: checkoutSnapshot
     });
-  }, [clearCart]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 to-muted flex items-center justify-center px-4">
