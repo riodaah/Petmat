@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { fallbackToOriginal, optimizedImage } from '../lib/images';
 
 /**
  * Galería de imágenes de producto con thumbnails
@@ -12,23 +13,23 @@ const ProductGallery = ({ images, productName }) => {
     <div className="space-y-4">
       {/* Imagen principal */}
       <motion.div
-        className="relative aspect-square rounded-xl overflow-hidden bg-muted cursor-zoom-in"
+        className="relative aspect-square rounded-2xl overflow-hidden bg-ice cursor-zoom-in"
         onClick={() => setIsZoomed(true)}
       >
         <AnimatePresence mode="wait">
           <motion.img
             key={selectedImage}
-            src={images[selectedImage]}
+            src={optimizedImage(images[selectedImage])}
             alt={`${productName} - imagen ${selectedImage + 1}`}
+            width="1200"
+            height="1200"
             className="w-full h-full object-cover"
             loading="eager"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/800x800/6CC5E9/FFFFFF?text=PetMAT';
-            }}
+            onError={fallbackToOriginal(images[selectedImage])}
           />
         </AnimatePresence>
 
@@ -42,7 +43,7 @@ const ProductGallery = ({ images, productName }) => {
 
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
+        <div className="grid grid-cols-7 gap-1.5 md:gap-2">
           {images.map((image, index) => (
             <motion.button
               key={index}
@@ -56,13 +57,11 @@ const ProductGallery = ({ images, productName }) => {
               whileTap={{ scale: 0.95 }}
             >
               <img
-                src={image}
-                alt={`${productName} thumbnail ${index + 1}`}
+                src={optimizedImage(image, 'thumb')}
+                alt={`${productName}, foto ${index + 1}`}
                 className="w-full h-full object-cover"
                 loading="lazy"
-                onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/200x200/6CC5E9/FFFFFF?text=PetMAT';
-                }}
+                onError={fallbackToOriginal(image)}
               />
             </motion.button>
           ))}
@@ -92,7 +91,8 @@ const ProductGallery = ({ images, productName }) => {
               onClick={() => setIsZoomed(false)}
             >
               <img
-                src={images[selectedImage]}
+                src={optimizedImage(images[selectedImage])}
+                onError={fallbackToOriginal(images[selectedImage])}
                 alt={`${productName} - zoom`}
                 className="max-w-full max-h-full object-contain"
                 loading="eager"

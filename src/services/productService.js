@@ -1,4 +1,10 @@
 import { getReviewsForProduct } from '../data/reviews';
+import config from '../config.json';
+
+// Las reseñas de src/data/reviews.js no vienen del backend ni de un sistema de
+// reseñas. Solo se muestran si config.reviews.showUnverified es true.
+const SHOW_UNVERIFIED_REVIEWS = Boolean(config.reviews?.showUnverified);
+const NO_REVIEWS = { ratingAverage: 0, reviews: [] };
 
 const BACKEND_URL =
   import.meta.env.VITE_BACKEND_URL || 'https://sunny-comfort-production.up.railway.app';
@@ -12,11 +18,13 @@ async function request(path) {
 }
 
 function mapCatalogProduct(raw) {
-  const fallbackReviews = getReviewsForProduct({
-    name: raw.name || raw.title,
-    short: raw.short || raw.short_description || '',
-    description: raw.description || ''
-  });
+  const fallbackReviews = SHOW_UNVERIFIED_REVIEWS
+    ? getReviewsForProduct({
+        name: raw.name || raw.title,
+        short: raw.short || raw.short_description || '',
+        description: raw.description || ''
+      })
+    : NO_REVIEWS;
   const reviewsCount = Number(raw.reviewsCount || raw.review_count || fallbackReviews.reviews.length);
   const ratingAverage = Number(raw.ratingAverage || raw.rating || fallbackReviews.ratingAverage);
 
@@ -44,9 +52,19 @@ function mapCatalogProduct(raw) {
   };
 }
 
-export async function getProducts() {
-  const data = await request('/api/products');
-  return (data.products || []).map(mapCatalogProduct).filter((p) => p.active);
+// Una sola petición por carga de página, compartida entre todos los componentes.
+let productsPromise = null;
+
+export function getProducts() {
+  if (!productsPromise) {
+    productsPromise = request('/api/products')
+      .then((data) => (data.products || []).map(mapCatalogProduct).filter((p) => p.active))
+      .catch((error) => {
+        productsPromise = null;
+        throw error;
+      });
+  }
+  return productsPromise;
 }
 
 export async function getProductById(id) {

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { trackAddToCart } from '../lib/analytics';
 
 const CartContext = createContext();
 
@@ -24,7 +25,8 @@ export const CartProvider = ({ children }) => {
   }, [cart]);
 
   // Agregar producto al carrito
-  const addToCart = (product, quantity = 1) => {
+  const addToCart = (product, quantity = 1, { openDrawer = true } = {}) => {
+    trackAddToCart(product, quantity);
     const cartProduct = {
       ...product,
       unit_price: product.hasOffer && product.offerPrice ? product.offerPrice : product.price,
@@ -47,8 +49,8 @@ export const CartProvider = ({ children }) => {
       }
     });
     
-    // Abrir drawer al agregar
-    setIsOpen(true);
+    // Abrir drawer al agregar (salvo en "Comprar ahora", que va directo al checkout)
+    if (openDrawer) setIsOpen(true);
   };
 
   // Remover producto del carrito

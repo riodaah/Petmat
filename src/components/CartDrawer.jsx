@@ -4,6 +4,7 @@ import { useCart } from '../hooks/useCart';
 import { formatCLP } from '../utils/currency';
 import CartItem from './CartItem';
 import MercadoPagoLogo from './MercadoPagoLogo';
+import { getChristmasDeadlines } from '../lib/season';
 
 /**
  * Drawer lateral del carrito
@@ -14,6 +15,7 @@ const CartDrawer = () => {
   
   const totalPrice = getTotalPrice();
   const totalItems = getTotalItems();
+  const deadlines = getChristmasDeadlines();
 
   const handleCheckout = () => {
     closeCart();
@@ -82,7 +84,7 @@ const CartDrawer = () => {
                   </p>
                   <button
                     onClick={handleContinueShopping}
-                    className="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-[#5AB5D9] transition-colors"
+                    className="px-6 py-3 bg-cta text-white font-bold rounded-xl hover:bg-cta-dark transition-colors"
                   >
                     Ver productos
                   </button>
@@ -104,14 +106,15 @@ const CartDrawer = () => {
                   <span className="text-lg font-heading font-semibold text-text">
                     Total:
                   </span>
-                  <span className="text-2xl font-heading font-bold text-primary">
+                  <span className="text-2xl font-heading font-bold text-ink">
                     {formatCLP(totalPrice)}
                   </span>
                 </div>
 
                 {/* Nota de envío */}
                 <p className="text-xs text-gray-600 text-center">
-                  * El costo de envío se calculará en el checkout
+                  Envío gratis en la Región Metropolitana; a regiones se calcula al pagar.
+                  {deadlines?.rm ? ` Pide hasta el ${deadlines.rm} y llega antes de Navidad.` : ''}
                 </p>
 
                 {/* Botones */}
@@ -120,14 +123,14 @@ const CartDrawer = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCheckout}
-                    className="w-full px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-[#5AB5D9] transition-colors shadow-md"
+                    className="w-full px-6 py-4 bg-cta text-white text-lg font-bold rounded-xl hover:bg-cta-dark transition-colors"
                   >
-                    Ir a Pagar
+                    Ir a pagar
                   </motion.button>
                   
                   <button
                     onClick={handleContinueShopping}
-                    className="w-full px-6 py-3 bg-white text-primary border-2 border-primary font-semibold rounded-lg hover:bg-primary hover:text-white transition-colors"
+                    className="w-full px-6 py-3 bg-white text-ink border border-gray-300 font-semibold rounded-xl hover:border-ink transition-colors"
                   >
                     Seguir comprando
                   </button>

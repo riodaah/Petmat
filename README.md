@@ -272,3 +272,11 @@ Proyecto desarrollado para PetMAT © 2025
 ---
 
 **¿Necesitas ayuda?** Abre un issue o contacta al equipo de desarrollo.
+
+## Temporada de Navidad, reseñas y medición
+
+- **Navidad**: `src/config.json` → `season.christmas`. El tema (gorros, regalos, franja verde, textos) se activa entre `start` y `end` y se apaga solo. `lastOrderDateRM` y `lastOrderDateRegions` son las fechas límite que se muestran para recibir antes de Navidad.
+- **Descuentos y stock**: salen del backend (`price`, `offerPrice`, `stock`). El "hasta X%" de la franja superior se calcula con esos datos.
+- **Reseñas**: las de `src/data/reviews.js` están ocultas (`reviews.showUnverified: false`). Actívalas solo si son de clientes reales.
+- **Fotos**: al agregar PNG en `public/assets/products/`, corre `python3 scripts/optimize-images.py` para generar las versiones WebP.
+- **Google Analytics / Ads**: define `VITE_GA_ID`, `VITE_GADS_ID` y `VITE_GADS_PURCHASE_LABEL` en el build. Sin ellas no se carga nada. Eventos: `view_item`, `add_to_cart`, `begin_checkout`, `purchase`.

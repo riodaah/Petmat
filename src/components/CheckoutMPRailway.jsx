@@ -3,6 +3,7 @@ import { useCart } from '../hooks/useCart';
 import { formatCLP } from '../utils/currency';
 import { createCheckoutTraceId, sendCheckoutDiagnostic } from '../services/checkoutDiagnostics';
 import MercadoPagoLogo from './MercadoPagoLogo';
+import { trackBeginCheckout } from '../lib/analytics';
 
 const SHIPPING_COSTS = {
   rm: 2990,
@@ -158,6 +159,10 @@ export default function CheckoutMPRailway() {
 
       // Calcular shipping según región seleccionada
       const shippingCost = getShippingCostByRegion(formData.region);
+      trackBeginCheckout(
+        cart,
+        cart.reduce((sum, item) => sum + item.price * item.quantity, 0) + shippingCost
+      );
 
       // Enviar solo identificador y cantidad; backend calcula precio real.
       const formattedItems = cart.map(item => ({

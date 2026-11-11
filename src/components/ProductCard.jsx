@@ -1,103 +1,80 @@
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { formatCLP } from '../utils/currency';
-import Badge from './Badge';
+import { useCart } from '../hooks/useCart';
+import { fallbackToOriginal, optimizedImage } from '../lib/images';
+import Price from './Price';
+import { getPricing } from '../lib/pricing';
 import StarRating from './StarRating';
 
+const LOW_STOCK_LIMIT = 10;
+
 /**
- * Tarjeta de producto individual
+ * Tarjeta de producto: foto, nombre, precio y compra directa.
  */
 const ProductCard = ({ product }) => {
-  const hasDiscount =
-    Boolean(product.hasOffer) &&
-    Boolean(product.offerPrice) &&
-    Number(product.price) > Number(product.offerPrice);
-  const discountPercent = hasDiscount
-    ? Math.round(((Number(product.price) - Number(product.offerPrice)) / Number(product.price)) * 100)
-    : 0;
+  const { addToCart } = useCart();
+  const { hasDiscount, discountPercent } = getPricing(product);
+  const image = product.images?.[0];
+  const outOfStock = product.stock <= 0;
+  const lowStock = !outOfStock && product.stock <= LOW_STOCK_LIMIT;
+  const productUrl = `/producto/${product.slug}`;
 
   return (
-    <motion.div
-      whileHover={{ y: -5, scale: 1.02 }}
-      transition={{ duration: 0.3 }}
-      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
-    >
-      <Link to={`/producto/${product.slug}`}>
-        {/* Imagen */}
-        <div className="relative h-64 overflow-hidden bg-muted">
-          <img
-            src={product.images?.[0] || 'https://via.placeholder.com/400x400/6CC5E9/FFFFFF?text=PetMAT'}
-            alt={`${product.name} en PetMAT`}
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-            loading="lazy"
-            onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/400x400/6CC5E9/FFFFFF?text=PetMAT';
-            }}
-          />
-          {hasDiscount && (
-            <>
-              <motion.div
-                animate={{ y: [0, -3, 0], rotate: [-14, -11, -14] }}
-                transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -left-14 top-5 z-20 w-52 bg-gradient-to-r from-primary to-[#5AB5D9] text-white text-center font-extrabold text-sm py-2 shadow-xl border border-white/30 -rotate-12"
-              >
-                {discountPercent}% DCTO
-              </motion.div>
-              <motion.div
-                animate={{ scale: [1, 1.05, 1], x: [0, 1, 0] }}
-                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute top-3 right-3 z-20 bg-accent text-white text-[11px] px-3 py-1 rounded-full font-bold shadow-lg"
-              >
-                Oferta limitada
-              </motion.div>
-            </>
-          )}
-          <div className="absolute bottom-3 left-3 flex flex-wrap gap-2">
-            {product.isBestSeller && <Badge type="mas-vendido">Más vendido</Badge>}
-            {product.isNew && <Badge type="nuevo">Nuevo</Badge>}
-          </div>
-        </div>
+    <article className="group flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-primary transition-colors">
+      <Link to={productUrl} className="relative block aspect-square bg-ice overflow-hidden">
+        <img
+          src={optimizedImage(image, 'thumb')}
+          alt={product.name}
+          width="600"
+          height="600"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+          onError={fallbackToOriginal(image)}
+        />
+        {hasDiscount && (
+          <span className="absolute top-3 left-3 bg-cta text-white text-sm font-bold px-3 py-1 rounded-full">
+            -{discountPercent}%
+          </span>
+        )}
+      </Link>
 
-        {/* Contenido */}
-        <div className="p-5">
-          <h3 className="font-heading font-semibold text-lg text-text mb-2 line-clamp-2">
-            {product.name}
-          </h3>
-          
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-            {product.short}
-          </p>
+      <div className="flex flex-col flex-1 p-5">
+        <h3 className="font-heading font-semibold text-lg text-ink leading-snug">
+          <Link to={productUrl} className="hover:text-primary-dark">{product.name}</Link>
+        </h3>
+        <p className="text-gray-600 text-sm mt-1">{product.short}</p>
 
-          <div className="mb-4">
+        {product.reviewsCount > 0 && (
+          <div className="mt-2">
             <StarRating value={product.ratingAverage} count={product.reviewsCount} />
           </div>
+        )}
 
-          {/* Precio y botón */}
-          <div className="flex items-center justify-between">
-            {product.hasOffer && product.offerPrice ? (
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-400 line-through">{formatCLP(product.price)}</span>
-                <span className="text-2xl font-heading font-bold text-primary">{formatCLP(product.offerPrice)}</span>
-              </div>
-            ) : (
-              <span className="text-2xl font-heading font-bold text-primary">{formatCLP(product.price)}</span>
-            )}
-            
-            <button className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-[#5AB5D9] transition-colors duration-200">
-              Ver producto
+        <div className="mt-auto pt-4">
+          <Price product={product} />
+          {lowStock && (
+            <p className="text-sm font-semibold text-cta mt-1">
+              {product.stock === 1 ? 'Queda 1 unidad' : `Quedan ${product.stock} unidades`}
+            </p>
+          )}
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            <button
+              onClick={() => addToCart(product, 1)}
+              disabled={outOfStock}
+              className="px-3 py-3 bg-cta text-white text-sm font-bold rounded-lg hover:bg-cta-dark transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              {outOfStock ? 'Agotado' : 'Agregar al carrito'}
             </button>
+            <Link
+              to={productUrl}
+              className="px-3 py-3 text-center text-sm font-bold text-ink border border-gray-300 rounded-lg hover:border-ink transition-colors"
+            >
+              Ver detalle
+            </Link>
           </div>
         </div>
-      </Link>
-    </motion.div>
+      </div>
+    </article>
   );
 };
 
 export default ProductCard;
-
-
-
-
-
-
-

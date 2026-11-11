@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { formatCLP } from '../utils/currency';
+import { fallbackToOriginal, optimizedImage } from '../lib/images';
 import { useCart } from '../hooks/useCart';
 
 /**
@@ -19,12 +20,10 @@ const CartItem = ({ item }) => {
       {/* Imagen */}
       <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-muted">
         <img
-          src={item.images[0]}
+          src={optimizedImage(item.images?.[0], 'thumb')}
           alt={item.name}
           className="w-full h-full object-cover"
-          onError={(e) => {
-            e.target.src = 'https://via.placeholder.com/80x80/6CC5E9/FFFFFF?text=PetMAT';
-          }}
+          onError={fallbackToOriginal(item.images?.[0])}
         />
       </div>
 
@@ -33,7 +32,7 @@ const CartItem = ({ item }) => {
         <h4 className="font-semibold text-text text-sm mb-1 line-clamp-2">
           {item.name}
         </h4>
-        <p className="text-primary font-bold text-sm mb-2">
+        <p className="text-ink font-bold text-sm mb-2">
           {formatCLP(item.price)}
         </p>
 

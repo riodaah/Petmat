@@ -1,4 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { initAnalytics, trackPageView } from './lib/analytics';
 import { CartProvider } from './hooks/useCart';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -17,10 +19,23 @@ import BlogIndex from './pages/BlogIndex';
 import BlogPost from './pages/BlogPost';
 import SeoCategoryPage from './pages/SeoCategoryPage';
 
+initAnalytics();
+
+// Al cambiar de página: volver arriba y registrar la vista.
+function RouteEffects() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    trackPageView(pathname);
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   return (
     <Router>
       <CartProvider>
+        <RouteEffects />
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-1">

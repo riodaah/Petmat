@@ -27,12 +27,20 @@
   },
   "mp": {
     "public_key_env": "VITE_MP_PUBLIC_KEY"
+  },
+  "season": {
+    "christmas": {
+      "enabled": true,
+      "start": "2026-11-01",
+      "end": "2026-12-24",
+      "lastOrderDateRM": "2026-12-15",
+      "lastOrderDateRegions": "2026-12-11"
+    }
+  },
+  "reviews": {
+    "showUnverified": false
+  },
+  "returns": {
+    "days": 30
   }
 }
-
-
-
-
-
-
-

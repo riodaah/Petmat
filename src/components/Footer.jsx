@@ -12,7 +12,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-accent text-white mt-20">
+    <footer className="bg-accent text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Columna 1: Sobre PetMAT */}
@@ -64,6 +64,16 @@ const Footer = () => {
               <li>
                 <Link to="/manta-olfativa-para-perros" className="text-gray-300 hover:text-primary transition-colors duration-200">
                   Manta olfativa para perros
+                </Link>
+              </li>
+              <li>
+                <Link to="/comedero-automatico-para-perros" className="text-gray-300 hover:text-primary transition-colors duration-200">
+                  Comedero automático para perros
+                </Link>
+              </li>
+              <li>
+                <Link to="/comedero-automatico-para-gatos" className="text-gray-300 hover:text-primary transition-colors duration-200">
+                  Comedero automático para gatos
                 </Link>
               </li>
             </ul>

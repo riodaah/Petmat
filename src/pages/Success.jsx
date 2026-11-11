@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useCart } from '../hooks/useCart';
 import config from '../config.json';
 import { getStoredCheckoutSnapshot, sendCheckoutDiagnostic } from '../services/checkoutDiagnostics';
+import { trackPurchase } from '../lib/analytics';
 
 const Success = () => {
   const { clearCart } = useCart();
@@ -19,6 +20,7 @@ const Success = () => {
     clearCart();
 
     const params = new URLSearchParams(window.location.search);
+    trackPurchase(params.get('payment_id') || params.get('collection_id'));
     const checkoutSnapshot = getStoredCheckoutSnapshot();
     sendCheckoutDiagnostic({
       stage: 'checkout_return_success',
